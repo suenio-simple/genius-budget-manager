@@ -8,6 +8,7 @@ import com.genius.budgetmanager.repository.CampaignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,6 +87,16 @@ public class CampaignService {
         Campaign campaign = getCampaignById(campaignId);
         campaign.setSpent(0.0);
         campaign.setBudget(newBudget);
+        return campaign;
+    }
+
+    public Campaign updateStatus(Long campaignId, String newStatus) {
+        Campaign campaign = getCampaignById(campaignId);
+
+        if (!Arrays.asList(new String[]{ "active", "paused", "closed", "draft" }).contains(newStatus.trim().toLowerCase()))
+            throw new RuntimeException("El estado " + newStatus + " es inválido");
+
+        campaign.setStatus(newStatus);
         return campaign;
     }
 }
