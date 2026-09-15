@@ -92,11 +92,12 @@ public class CampaignService {
 
     public Campaign updateStatus(Long campaignId, String newStatus) {
         Campaign campaign = getCampaignById(campaignId);
+        String normalizedStatus = newStatus.trim().toLowerCase();
 
-        if (!Arrays.asList(new String[]{ "active", "paused", "closed", "draft" }).contains(newStatus.trim().toLowerCase()))
-            throw new RuntimeException("El estado " + newStatus + " es inválido");
+        if (!Arrays.asList(new String[]{ "active", "paused", "closed", "draft" }).contains(normalizedStatus))
+            throw new RuntimeException("El estado " + normalizedStatus + " es inválido");
 
-        campaign.setStatus(newStatus);
+        campaign.setStatus(normalizedStatus);
         return campaign;
     }
 }
