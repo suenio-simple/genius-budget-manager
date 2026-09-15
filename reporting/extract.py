@@ -61,6 +61,11 @@ def export_to_excel(campaigns: list, summary: dict) -> None:
             c.get('budget', 0) - c.get('spent', 0),
         ])
 
+    money_format = '"$" #,##0.00'
+    for row in ws.iter_rows(min_row=2, min_col=5, max_col=7, max_row=ws.max_row):
+        for cell in row:
+            cell.number_format = money_format
+
     # Hoja de resumen
     ws2 = wb.create_sheet('Resumen')
     ws2.append(['Métrica', 'Valor'])
