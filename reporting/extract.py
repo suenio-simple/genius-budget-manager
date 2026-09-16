@@ -44,9 +44,11 @@ def get_leads_summary() -> list:
 def export_to_excel(campaigns: list, summary: dict) -> None:
     """Genera el archivo Excel con métricas de campañas."""
     import openpyxl
-    from openpyxl.styles import Font
+    from openpyxl.styles import Font, Border, Side
     wb = openpyxl.Workbook()
     bold = Font(bold=True)
+    thin = Side(style='thin')
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
 
     # Hoja de campañas
     ws = wb.active
@@ -70,6 +72,10 @@ def export_to_excel(campaigns: list, summary: dict) -> None:
         for cell in row:
             cell.number_format = money_format
 
+    for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, max_col=7):
+        for cell in row:
+            cell.border = border
+
     # Hoja de resumen
     ws2 = wb.create_sheet('Resumen')
     ws2.append(['Métrica', 'Valor'])
@@ -86,6 +92,10 @@ def export_to_excel(campaigns: list, summary: dict) -> None:
             cell.number_format = money_format
 
     ws2.cell(row=6, column=2).number_format = '0.00"%"'
+
+    for row in ws2.iter_rows(min_row=1, max_row=ws2.max_row, min_col=1, max_col=2):
+        for cell in row:
+            cell.border = border
 
     wb.save(OUTPUT_FILE)
     print(f'Reporte guardado en {OUTPUT_FILE}')
