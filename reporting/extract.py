@@ -75,6 +75,10 @@ def export_to_excel(campaigns: list, summary: dict) -> None:
     ws2.append(['Total disponible',    summary.get('totalAvailable', 0)])
     ws2.append(['% de consumo',        summary.get('consumptionPercentage', 0)])
 
+    for row in ws2.iter_rows(min_row=3, max_row=5, min_col=2, max_col=2):
+        for cell in row:
+            cell.number_format = money_format
+
     wb.save(OUTPUT_FILE)
     print(f'Reporte guardado en {OUTPUT_FILE}')
 
