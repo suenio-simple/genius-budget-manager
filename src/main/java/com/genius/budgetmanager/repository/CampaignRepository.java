@@ -68,4 +68,11 @@ public class CampaignRepository {
         expenses.add(expense);
         return expense;
     }
+
+    public List<Campaign> findByClientContainingIgnoreCase(String client) {
+        return campaigns.stream()
+        .filter(c -> c.getClient() != null && c.getClient().toLowerCase().contains(client.toLowerCase()))
+        .toList();
+    }
+
 }

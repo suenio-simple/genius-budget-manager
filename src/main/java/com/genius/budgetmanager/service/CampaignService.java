@@ -33,6 +33,14 @@ public class CampaignService {
                 .orElseThrow(() -> new RuntimeException("Campaign not found: " + id));
     }
 
+    public List<Campaign> getCampaignsByClient(String client, String status){
+        List<Campaign> byClient = repository.findByClientContainingIgnoreCase(client);
+        if(status != null && !status.isBlank()) {
+            return byClient.stream().filter(c -> c.getStatus().equalsIgnoreCase(status)).toList();
+        }
+        return byClient;
+    }
+
     public BudgetSummary getBudgetSummary(Long campaignId) {
         Campaign campaign = getCampaignById(campaignId);
 
