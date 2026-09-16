@@ -34,11 +34,20 @@ public class CampaignService {
     }
 
     public List<Campaign> getCampaignsByClient(String client, String status){
-        List<Campaign> byClient = repository.findByClientContainingIgnoreCase(client);
-        if(status != null && !status.isBlank()) {
-            return byClient.stream().filter(c -> c.getStatus().equalsIgnoreCase(status)).toList();
+        try
+        {
+            List<Campaign> byClient = repository.findByClientContainingIgnoreCase(client);
+
+            if(status != null && !status.isBlank()) {
+                return byClient.stream().filter(c -> c.getStatus() == CampaignStatus.valueOf(status.toUpperCase())).toList();
+            }
+
+            return byClient;
+        } 
+        catch (IllegalArgumentException e) 
+        {
+            throw new IllegalArgumentException("El estado '" + status + "' es inválido");
         }
-        return byClient;
     }
 
     public BudgetSummary getBudgetSummary(Long campaignId) {
