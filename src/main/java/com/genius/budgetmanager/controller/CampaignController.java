@@ -73,7 +73,7 @@ public class CampaignController {
         return ResponseEntity.ok(campaignService.updateBudget(id, request.getBudget()));
     }
 
-    @PutMapping("/{id}/status/{status}")
+    @PutMapping("/{id}/status")
     @Operation(summary = "Actualizar el estado de una campana")
     public ResponseEntity<Campaign> putMethodName(@PathVariable Long id, @RequestBody StatusUpdateRequest request) {
         return ResponseEntity.ok(campaignService.updateStatus(id, request.getStatus()));
