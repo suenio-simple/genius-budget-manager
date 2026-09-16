@@ -16,9 +16,11 @@ public class CampaignRepository {
     private final List<Campaign> campaigns = new ArrayList<>();
     private final List<Expense> expenses = new ArrayList<>();
     private long nextExpenseId = 11;
+    private long nextCampaignId;
 
     public CampaignRepository() {
         loadData();
+        nextCampaignId = campaigns.stream().mapToLong(Campaign::getId).max().orElse(0L) + 1;
     }
 
     private void loadData() {
@@ -57,6 +59,18 @@ public class CampaignRepository {
         return campaigns.stream().filter(c -> c.getId().equals(id)).findFirst();
     }
 
+    public List<Campaign> findByClientContainingIgnoreCase(String client) {
+        return campaigns.stream()
+        .filter(c -> c.getClient() != null && c.getClient().toLowerCase().contains(client.toLowerCase()))
+        .toList();
+    }
+
+    public Campaign save(Campaign campaign) {
+        campaign.setId(nextCampaignId++);
+        campaign.add(campaign);
+        return campaign;
+    }
+
     public List<Expense> findExpensesByCampaignId(Long campaignId) {
         return expenses.stream()
                 .filter(e -> e.getCampaignId().equals(campaignId))
@@ -69,10 +83,5 @@ public class CampaignRepository {
         return expense;
     }
 
-    public List<Campaign> findByClientContainingIgnoreCase(String client) {
-        return campaigns.stream()
-        .filter(c -> c.getClient() != null && c.getClient().toLowerCase().contains(client.toLowerCase()))
-        .toList();
-    }
 
 }

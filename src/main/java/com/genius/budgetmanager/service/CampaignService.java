@@ -50,6 +50,27 @@ public class CampaignService {
         }
     }
 
+    public Campaign createCampaign(Campaign campaign) {
+        if (campaign.getName() == null || campaign.getName().isBlank()) {
+            throw new IllegalArgumentException("El nombre es obligatorio.");
+        }
+
+        if (campaign.getClient() == null || campaign.getClient().isBlank()) {
+            throw new IllegalArgumentException("El cliente es obligatorio.");
+        }
+
+        if (campaign.getBudget() == null || campaign.getBudget() <= 0) {
+            throw new IllegalArgumentException("El presupuesto debe ser mayor a 0");
+        }
+
+        if (campaign.getStatus() == null) {
+            campaign.setStatus (CampaignStatus.DRAFT);
+        }
+
+        campaign.setSpent(campaign.getSpent() != null ? campaign.getSpent() : 0.0);
+        return repository.save(campaign);
+    }
+
     public BudgetSummary getBudgetSummary(Long campaignId) {
         Campaign campaign = getCampaignById(campaignId);
 

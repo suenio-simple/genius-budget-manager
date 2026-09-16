@@ -43,6 +43,12 @@ public class CampaignController {
         return ResponseEntity.ok(campaignService.getAllCampaigns());
     }
 
+    @PostMapping
+    @Operation(summary= "Crear una nueva campaña.")
+    public ResponseEntity<Campaign> createCampaign(@RequestBody Campaign campaign) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(campaignService.createCampaign(campaign));
+    }
+
     @GetMapping("/summary")
     @Operation(summary = "Resumen global de presupuesto", description = "Agrega KPIs de todas las campanas activas: total asignado, gastado, disponible y porcentaje de consumo.")
     public ResponseEntity<GlobalBudgetSummary> getGlobalBudgetSummary() {
