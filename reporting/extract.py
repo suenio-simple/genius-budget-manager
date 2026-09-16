@@ -41,6 +41,13 @@ def get_leads_summary() -> list:
     return api_get(f'{LANDING_CRM_URL}/api/landings/summary')
 
 
+def autofit_columns(ws) -> None:
+    """Ajusta el ancho de cada columna al contenido más largo."""
+    for column_cells in ws.columns:
+        length = max(len(str(cell.value)) for cell in column_cells if cell.value is not None)
+        ws.column_dimensions[column_cells[0].column_letter].width = length + 2
+
+
 def export_to_excel(campaigns: list, summary: dict) -> None:
     """Genera el archivo Excel con métricas de campañas."""
     import openpyxl
@@ -96,6 +103,9 @@ def export_to_excel(campaigns: list, summary: dict) -> None:
     for row in ws2.iter_rows(min_row=1, max_row=ws2.max_row, min_col=1, max_col=2):
         for cell in row:
             cell.border = border
+
+    autofit_columns(ws)
+    autofit_columns(ws2)
 
     wb.save(OUTPUT_FILE)
     print(f'Reporte guardado en {OUTPUT_FILE}')
