@@ -27,10 +27,10 @@ public class CampaignController {
     @Operation(summary = "Listar campanas", description = "Retorna todas las campanas. Acepta filtros opcionales por status y cliente.")
     public ResponseEntity<List<Campaign>> getCampaigns(
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) String cliente) {
+            @RequestParam(required = false) String client) {
 
-        if (cliente != null && !cliente.isBlank()) {
-            return ResponseEntity.ok(campaignService.getCampaignsByCliente(cliente, status));
+        if (client != null && !client.isBlank()) {
+            return ResponseEntity.ok(campaignService.getCampaignsByClient(client, status));
         }
         if (status != null && !status.isBlank()) {
             return ResponseEntity.ok(campaignService.getCampaignsByStatus(status));
