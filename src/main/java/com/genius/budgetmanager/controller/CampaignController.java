@@ -24,8 +24,14 @@ public class CampaignController {
     private CampaignService campaignService;
 
     @GetMapping
-    @Operation(summary = "Listar campanas", description = "Retorna todas las campanas. Acepta filtro opcional por status.")
-    public ResponseEntity<List<Campaign>> getCampaigns(@RequestParam(required = false) String status) {
+    @Operation(summary = "Listar campanas", description = "Retorna todas las campanas. Acepta filtros opcionales por status y cliente.")
+    public ResponseEntity<List<Campaign>> getCampaigns(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String cliente) {
+
+        if (cliente != null && !cliente.isBlank()) {
+            return ResponseEntity.ok(campaignService.getCampaignsByCliente(cliente, status));
+        }
         if (status != null && !status.isBlank()) {
             return ResponseEntity.ok(campaignService.getCampaignsByStatus(status));
         }
@@ -67,4 +73,5 @@ public class CampaignController {
     public ResponseEntity<Campaign> updateBudget(@PathVariable Long id, @RequestBody BudgetUpdateRequest request) {
         return ResponseEntity.ok(campaignService.updateBudget(id, request.getBudget()));
     }
+
 }
