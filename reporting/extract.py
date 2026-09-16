@@ -41,10 +41,19 @@ def get_leads_summary() -> list:
     return api_get(f'{LANDING_CRM_URL}/api/landings/summary')
 
 
+def _display_length(cell) -> int:
+    """Longitud aproximada del contenido ya formateado (moneda/porcentaje)."""
+    if isinstance(cell.value, (int, float)) and '%' in cell.number_format:
+        return len(f'{cell.value:,.2f}%')
+    if isinstance(cell.value, (int, float)) and '$' in cell.number_format:
+        return len(f'$ {cell.value:,.2f}')
+    return len(str(cell.value))
+
+
 def autofit_columns(ws) -> None:
-    """Ajusta el ancho de cada columna al contenido más largo."""
+    """Ajusta el ancho de cada columna al contenido más largo, ya formateado."""
     for column_cells in ws.columns:
-        length = max(len(str(cell.value)) for cell in column_cells if cell.value is not None)
+        length = max(_display_length(cell) for cell in column_cells if cell.value is not None)
         ws.column_dimensions[column_cells[0].column_letter].width = length + 2
 
 
