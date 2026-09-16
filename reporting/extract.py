@@ -79,6 +79,8 @@ def export_to_excel(campaigns: list, summary: dict) -> None:
         for cell in row:
             cell.number_format = money_format
 
+    ws2.cell(row=6, column=2).number_format = '0.00"%"'
+
     wb.save(OUTPUT_FILE)
     print(f'Reporte guardado en {OUTPUT_FILE}')
 
