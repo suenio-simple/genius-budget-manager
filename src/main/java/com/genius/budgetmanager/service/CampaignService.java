@@ -2,6 +2,7 @@ package com.genius.budgetmanager.service;
 
 import com.genius.budgetmanager.model.BudgetSummary;
 import com.genius.budgetmanager.model.Campaign;
+import com.genius.budgetmanager.model.CampaignStatus;
 import com.genius.budgetmanager.model.Expense;
 import com.genius.budgetmanager.model.GlobalBudgetSummary;
 import com.genius.budgetmanager.repository.CampaignRepository;
@@ -71,7 +72,7 @@ public class CampaignService {
 
     public GlobalBudgetSummary getGlobalBudgetSummary() {
         List<Campaign> active = repository.findAll().stream()
-                .filter(c -> "active".equalsIgnoreCase(c.getStatus()))
+                .filter(c -> "active".equalsIgnoreCase(c.getStatus().getStatusValue()))
                 .collect(Collectors.toList());
 
         double totalBudget    = active.stream().mapToDouble(Campaign::getBudget).sum();
@@ -94,6 +95,19 @@ public class CampaignService {
         Campaign campaign = getCampaignById(campaignId);
         campaign.setSpent(0.0);
         campaign.setBudget(newBudget);
+        return campaign;
+    }
+
+    public Campaign updateStatus(Long campaignId, String newStatus) {
+        Campaign campaign = getCampaignById(campaignId);
+        String normalizedStatus = newStatus.trim().toUpperCase();
+
+        try {
+            campaign.setStatus(CampaignStatus.valueOf(normalizedStatus));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("El estado '" + normalizedStatus + "' es inválido");
+        }
+
         return campaign;
     }
 }

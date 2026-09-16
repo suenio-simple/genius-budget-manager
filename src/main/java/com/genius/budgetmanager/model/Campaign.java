@@ -6,7 +6,7 @@ public class Campaign {
     private String name;
     private String client;
     private String type;
-    private String status;
+    private CampaignStatus status;
     private Double budget;
     private Double spent;
     private String currency;
@@ -15,7 +15,7 @@ public class Campaign {
 
     public Campaign() {}
 
-    public Campaign(Long id, String name, String client, String type, String status,
+    public Campaign(Long id, String name, String client, String type, CampaignStatus status,
                     Double budget, Double spent, String currency, String startDate, String endDate) {
         this.id = id;
         this.name = name;
@@ -41,8 +41,8 @@ public class Campaign {
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public CampaignStatus getStatus() { return status; }
+    public void setStatus(CampaignStatus status) { this.status = status; }
 
     public Double getBudget() { return budget; }
     public void setBudget(Double budget) { this.budget = budget; }

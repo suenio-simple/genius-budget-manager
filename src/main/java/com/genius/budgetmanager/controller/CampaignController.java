@@ -5,6 +5,7 @@ import com.genius.budgetmanager.model.BudgetUpdateRequest;
 import com.genius.budgetmanager.model.Campaign;
 import com.genius.budgetmanager.model.Expense;
 import com.genius.budgetmanager.model.GlobalBudgetSummary;
+import com.genius.budgetmanager.model.StatusUpdateRequest;
 import com.genius.budgetmanager.service.CampaignService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
 @RequestMapping("/api/campaigns")
@@ -74,4 +79,9 @@ public class CampaignController {
         return ResponseEntity.ok(campaignService.updateBudget(id, request.getBudget()));
     }
 
+    @PutMapping("/{id}/status")
+    @Operation(summary = "Actualizar el estado de una campana")
+    public ResponseEntity<Campaign> putMethodName(@PathVariable Long id, @RequestBody StatusUpdateRequest request) {
+        return ResponseEntity.ok(campaignService.updateStatus(id, request.getStatus()));
+    }
 }
