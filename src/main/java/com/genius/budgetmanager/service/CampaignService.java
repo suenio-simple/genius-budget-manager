@@ -97,7 +97,7 @@ public class CampaignService {
         try {
             campaign.setStatus(CampaignStatus.valueOf(normalizedStatus));
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("El estado " + normalizedStatus + " es inválido");
+            throw new IllegalArgumentException("El estado '" + normalizedStatus + "' es inválido");
         }
 
         return campaign;
