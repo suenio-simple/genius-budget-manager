@@ -67,7 +67,7 @@ public class CampaignRepository {
 
     public Campaign save(Campaign campaign) {
         campaign.setId(nextCampaignId++);
-        campaign.add(campaign);
+        campaigns.add(campaign);
         return campaign;
     }
 
