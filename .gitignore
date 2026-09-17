@@ -16,3 +16,8 @@ target/
 *.log
 
 requerimientos.html
+
+.atl/
+/report.xlsx
+
+/reporting/venv
