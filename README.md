@@ -18,6 +18,9 @@ Esta API resuelve la necesidad de tener visibilidad centralizada sobre el estado
 |----------|-----------------------------------------------|
 | `GET /api/campaigns` | El equipo necesita ver el listado completo de campañas activas y pasadas sin tener que consultar a otra persona. |
 | `GET /api/campaigns?status=active` | El account manager de SueñoSimple quiere ver solo las campañas en curso para reportar el estado semanal. |
+| `GET /api/campaigns?client={client}` | El equipo quiere ver todas las campañas de un cliente puntual (ej. SueñoSimple) sin tener que revisar el listado completo a mano. |
+| `POST /api/campaigns` | Cuando Genius cierra una campaña nueva con un cliente, el equipo la da de alta en el sistema antes de empezar a registrar gastos. |
+| `PUT /api/campaigns/{id}/status` | El equipo actualiza el estado de una campaña (por ejemplo, de `draft` a `active` al arrancarla, o a `paused`/`closed` según corresponda) sin tener que tocar el presupuesto. |
 | `GET /api/campaigns/{id}` | Un developer o media buyer necesita el detalle de una campaña específica antes de registrar un gasto. |
 | `GET /api/campaigns/{id}/summary` | El cliente pide saber cuánto presupuesto consumió hasta hoy y cuánto le queda disponible. |
 | `GET /api/campaigns/{id}/expenses` | El equipo de administración necesita auditar todos los gastos de una campaña para validar la facturación. |
@@ -81,6 +84,9 @@ La colección también puede importarse en Postman usando la especificación Ope
 |--------|------|-------------|
 | GET | `/api/campaigns` | Listar todas las campañas |
 | GET | `/api/campaigns?status={status}` | Filtrar campañas por estado |
+| GET | `/api/campaigns?client={client}` | Filtrar campañas por cliente (combinable con `status`) |
+| POST | `/api/campaigns` | Crear una nueva campaña |
+| PUT | `/api/campaigns/{id}/status` | Actualizar el estado de una campaña |
 | GET | `/api/campaigns/summary` | KPIs globales de campañas activas |
 | GET | `/api/campaigns/{id}` | Obtener campaña por ID |
 | GET | `/api/campaigns/{id}/summary` | Resumen de presupuesto |
