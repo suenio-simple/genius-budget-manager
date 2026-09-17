@@ -12,6 +12,7 @@ El servidor de Budget Manager debe estar corriendo en http://localhost:8080
 """
 
 import json
+import sys
 import urllib.request
 import urllib.error
 from datetime import datetime
@@ -20,10 +21,18 @@ BUDGET_MANAGER_URL = 'http://localhost:8080'
 LANDING_CRM_URL    = 'http://localhost:3000'
 OUTPUT_FILE        = 'report.xlsx'
 
+REQUIRED_CAMPAIGN_FIELDS = ('id', 'name', 'client', 'status', 'budget', 'spent')
+REQUIRED_SUMMARY_FIELDS  = ('activeCampaigns', 'totalBudget', 'totalSpent', 'totalAvailable', 'consumptionPercentage')
+
 
 def api_get(url: str) -> list | dict:
-    with urllib.request.urlopen(url, timeout=5) as response:
-        return json.loads(response.read())
+    try:
+        with urllib.request.urlopen(url, timeout=5) as response:
+            return json.loads(response.read())
+    except (urllib.error.URLError, TimeoutError) as e:
+        raise RuntimeError(f'No se pudo conectar a {url}: {e}') from e
+    except json.JSONDecodeError as e:
+        raise RuntimeError(f'Respuesta inválida (no es JSON) desde {url}: {e}') from e
 
 
 def get_campaigns() -> list:
@@ -34,6 +43,30 @@ def get_campaigns() -> list:
 def get_budget_summary() -> dict:
     """Obtiene el resumen global de presupuesto (solo campañas activas)."""
     return api_get(f'{BUDGET_MANAGER_URL}/api/campaigns/summary')
+
+
+def validate_campaigns(campaigns) -> None:
+    """Verifica que la lista de campañas tenga la forma que espera el reporte."""
+    if not isinstance(campaigns, list):
+        raise RuntimeError(f'Se esperaba una lista de campañas, se recibió: {type(campaigns).__name__}')
+    for i, c in enumerate(campaigns):
+        if not isinstance(c, dict):
+            raise RuntimeError(f'Campaña #{i} no es un objeto válido: {c!r}')
+        missing = [f for f in REQUIRED_CAMPAIGN_FIELDS if f not in c]
+        if missing:
+            raise RuntimeError(f'Campaña #{i} (id={c.get("id", "?")}) no tiene los campos: {", ".join(missing)}')
+        for field in ('budget', 'spent'):
+            if not isinstance(c[field], (int, float)):
+                raise RuntimeError(f'Campaña #{i} (id={c.get("id")}) tiene "{field}" no numérico: {c[field]!r}')
+
+
+def validate_summary(summary) -> None:
+    """Verifica que el resumen de presupuesto tenga la forma que espera el reporte."""
+    if not isinstance(summary, dict):
+        raise RuntimeError(f'Se esperaba un objeto de resumen, se recibió: {type(summary).__name__}')
+    missing = [f for f in REQUIRED_SUMMARY_FIELDS if f not in summary]
+    if missing:
+        raise RuntimeError(f'El resumen no tiene los campos: {", ".join(missing)}')
 
 
 def get_leads_summary() -> list:
@@ -121,8 +154,14 @@ def export_to_excel(campaigns: list, summary: dict) -> None:
 
 
 if __name__ == '__main__':
-    print(f'Extrayendo datos — {datetime.now().strftime("%Y-%m-%d %H:%M")}')
-    campaigns = get_campaigns()
-    summary   = get_budget_summary()
-    print(f'Campañas encontradas: {len(campaigns)}')
-    export_to_excel(campaigns, summary)
+    try:
+        print(f'Extrayendo datos — {datetime.now().strftime("%Y-%m-%d %H:%M")}')
+        campaigns = get_campaigns()
+        validate_campaigns(campaigns)
+        summary = get_budget_summary()
+        validate_summary(summary)
+        print(f'Campañas encontradas: {len(campaigns)}')
+        export_to_excel(campaigns, summary)
+    except RuntimeError as e:
+        print(f'Error: {e}', file=sys.stderr)
+        sys.exit(1)
