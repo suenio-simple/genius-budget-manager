@@ -129,6 +129,10 @@ public class CampaignService {
     }
 
     public Campaign updateStatus(Long campaignId, String newStatus) {
+        if (newStatus == null) {
+            throw new IllegalArgumentException("El estado es obligatorio");
+        }
+
         Campaign campaign = getCampaignById(campaignId);
         String normalizedStatus = newStatus.trim().toUpperCase();
 
