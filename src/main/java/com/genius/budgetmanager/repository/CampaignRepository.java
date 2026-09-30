@@ -36,8 +36,19 @@ public class CampaignRepository {
                 200000.0, 195600.0, "ARS", "2026-03-01", "2026-03-31"));
         campaigns.add(new Campaign(6L, "Branding Digital Q2 2026", "TechStore", "branding", CampaignStatus.DRAFT,
                 50000.0, 0.0, "ARS", "2026-04-01", "2026-06-30"));
-        campaigns.add(new Campaign(6L, "Influencers Verano 2025", "SuenoSimple", "influencer", CampaignStatus.CLOSED,
+        campaigns.add(new Campaign(7L, "Influencers Verano 2025", "SuenoSimple", "influencer", CampaignStatus.CLOSED,
                 50000.0, 0.0, "ARS", "2026-04-01", "2025-03-15"));
+
+        // Campañas activas pensadas para disparar cada alerta del dashboard
+        // Pacing acelerado: 55% consumido cuando lleva ~23% del período (margen >= 25 puntos, sin llegar al 90%)
+        campaigns.add(new Campaign(8L, "Meta Ads Lanzamiento Primavera", "SuenoSimple", "social_ads", CampaignStatus.ACTIVE,
+                100000.0, 55000.0, "ARS", "2026-09-01", "2026-12-31"));
+        // Parece pausada: activa, con el período en curso y sin gasto registrado
+        campaigns.add(new Campaign(9L, "Google Ads Ofertas Hot Sale Otoño", "TechStore", "search_ads", CampaignStatus.ACTIVE,
+                60000.0, 0.0, "ARS", "2026-09-14", "2026-12-31"));
+        // Superó presupuesto: gastó más de lo asignado
+        campaigns.add(new Campaign(10L, "Display Retargeting Q3-Q4 2026", "TechStore", "display", CampaignStatus.ACTIVE,
+                40000.0, 46500.0, "ARS", "2026-08-01", "2026-12-31"));
 
         expenses.add(new Expense(1L, 1L, "Meta Ads - Black Friday", 85000.0, "ads_spend", "2025-11-05"));
         expenses.add(new Expense(2L, 1L, "Diseno de piezas graficas", 38200.0, "creative", "2025-11-03"));
